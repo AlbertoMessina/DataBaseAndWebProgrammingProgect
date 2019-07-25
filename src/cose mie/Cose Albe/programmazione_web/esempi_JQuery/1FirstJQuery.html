@@ -1,0 +1,25 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+	</script>
+</head>
+
+	<ul>
+		<li class="A">e1 </li>
+		<li class="B">e2 </li>
+		<li class="B">e3 </li>
+		<li class="A">e4 </li>
+		<li class="B">e5 </li>
+		<li class="C">e4 </li>
+		<li class="B">e5
+			<ul>
+				<li class="B"> e6 </li>
+			</ul>
+		</li>
+	</ul> 
+</html>
+<script>
+	$(document).ready(function(){
+		console.log($(".A ~ .B"));
+		});
+</script>

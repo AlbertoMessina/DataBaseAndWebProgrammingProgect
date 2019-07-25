@@ -1,0 +1,71 @@
+<html>
+<head>
+<head>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+	<script type="text/javascript" language="javascript" src="//code.jquery.com/jquery-1.12.4.js">
+	</script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js">
+	</script>
+</head>
+
+<select id="registaDropdown">
+</select>
+
+ 
+	 
+	 <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Codice Film</th>
+                <th>Titolo</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Codice Film</th>
+                <th>Titolo</th>
+            </tr>
+        </tfoot>
+    </table>
+	 
+<script>
+
+
+
+  $('#registaDropdown').empty();
+     
+    $.ajax({
+            type: "POST",
+            url: "dataSelectRegisti.php",
+            //data: { 'carId': carId  },
+            success: function(data){
+                // Parse the returned json data
+                var opts = $.parseJSON(data);
+				
+                // Use jQuery's each to iterate over the opts value
+                $.each(opts, function(i, d) {
+                    // You will need to alter the below to get the right values from your json object.  Guessing that d.id / d.modelName are columns in your carModels data
+                    $('#registaDropdown').append('<option value="' + d.Regista + '">' + d.Regista + '</option>');
+                });
+            }
+        });
+		
+		$('#registaDropdown').on('change', function() {
+			 var table = $('#example').dataTable( {
+			 "processing": true,
+				"serverSide": true,
+				"bDestroy": true,
+				"bJQueryUI": true,				 
+				"sAjaxSource": "datatableData1.php?Regista="+$('#registaDropdown').val(),
+				"bFilter": true,
+				"dom": "Bfrtip",
+				"responsive": true,
+				"bDestroy": true,				 
+				"aoColumns": [					 
+					{ "mData": "CodFilm" },
+					{ "mData": "Titolo"},             					
+				],
+					
+				});
+			})
+</script>

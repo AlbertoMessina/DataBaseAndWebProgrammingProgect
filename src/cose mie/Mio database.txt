@@ -1,0 +1,227 @@
+CREATE DATABASE progettoEsame;
+USE progettoEsame;
+
+CREATE table ACCOUNT
+(
+	id 		int not null Auto_Increment UNIQUE,
+	activation_date DATE NOT NULL,
+	passw 		VARCHAR(40) NOT NULL,
+	email		VARCHAR(20) NOT NULL UNIQUE,
+	PRIMARY KEY (id)
+	
+)
+ENGINE = 'InnoDB';
+
+CREATE TABLE USERS(
+
+	user_id		 int not null UNIQUE,
+	name		 VARCHAR(45) not NULL,
+	surname 	 VARCHAR(45) NOT NULL,
+	birth 		 DATE not NULL,
+	email 		 VARCHAR(40) NOT NULL,
+	photo 		 VARCHAR(40) NULL,
+	professionality  FLOAT(4,2) DEFAULT 0,
+	performance 	 FLOAT(4,2) DEFAULT 0,
+	impression 	 FLOAT(4,2) DEFAULT 0,
+	INDEX newUser(user_id),
+	FOREIGN KEY (user_id) REFERENCES ACCOUNT(id)
+	
+)
+ENGINE = 'InnoDB';
+
+CREATE TABLE JAM_SESSION
+(
+	jam_session_id INT NOT NULL AUTO_INCREMENT UNIQUE,
+	user_id 		INT NOT NULL,	
+	date 			DATE,	
+	place_id                INT NOT NULL,
+	genre			VARCHAR(30) NOT NULL,
+	INDEX newJam_SESSION ( user_id),
+	PRIMARY KEY (jam_session_id),
+	FOREIGN KEY (user_id) REFERENCES USERS(user_id),
+	FOREIGN KEY (place_id) REFERENCES PLACE(place_id)
+)
+ENGINE = 'InnoDB';
+
+CREATE TABLE PLACE
+(	place_id 		INT NOT NULL AUTO_INCREMENT UNIQUE,
+	city 			VARCHAR(45) NOT NULL,
+	address 		VARCHAR(60) NOT NULL,
+	lat        		FLOAT(10,6) NOT NULL,
+	lng        		FLOAT(10,6) NOT NULL
+	
+
+)EnGINE ='InnoDB';
+
+CREATE TABLE EDUCATION_EXPERIENCE
+(
+	education_experience_id INT NOT NULL AUTO_INCREMENT UNIQUE,
+	title VARCHAR(40) NOT NULL,
+	year INT NOT NULL,
+	place VARCHAR(50) NOT NULL,
+	user_id INT NOT NULL,
+	INDEX user_idx ( user_id),
+	PRIMARY KEY (education_experience_id),
+	FOREIGN KEY( user_id) REFERENCES USERS (user_id)	
+)
+ENGINE = 'InnoDB';
+
+CREATE TABLE INSTRUMENT(
+
+	instrument_id INT NOT NULL AUTO_INCREMENT UNIQUE,
+	user_id INT NOT NULL,
+	type VARCHAR(20) NOT NULL,
+	brand VARCHAR(20) NOT  NULL,
+	model VARCHAR(35) NOT  NULL,
+	custom_option VARCHAR(100) NULL,
+	INDEX user_idx (user_id),
+	PRIMARY KEY ( instrument_id),
+	FOREIGN KEY (user_id) REFERENCES USERS ( user_id)
+)
+ENGINE = 'InnoDB';
+
+
+CREATE TABLE  INVITE (
+  user_id     INT NOT NULL,
+  jam_session_id  INT NOT NULL,
+  invited_user INT NOT NULL,
+  reply	  	  INT NOT NULL,
+  INDEX newID (user_id),
+  INDEX InID (invited_user),
+  INDEX newINVITE (jam_session_id),
+  PRIMARY KEY (user_id, jam_session_id, invited_user),
+  FOREIGN KEY (user_id) REFERENCES USERS (user_id),
+  FOREIGN KEY (invited_user) REFERENCES USERS (user_id),
+  FOREIGN KEY (jam_session_id) REFERENCES jam_session (jam_session_id))
+ENGINE = 'InnoDB';
+
+CREATE TABLE  SESSION_INSTRUMENT (
+  SESSION_INSTRUMENT_id     INT NOT NULL AUTO_INCREMENT UNIQUE,
+  user_id     INT NOT NULL,
+  title       VARCHAR(20) NOT NULL,
+  note        VARCHAR(300),
+  instrument_id INT NOT NULL,
+  education_experience_id INT NOT NULL,
+  INDEX  instrument_idx (instrument_id),
+  INDEX newSESSION_INSTRUMENT (user_id),
+  PRIMARY KEY (SESSION_INSTRUMENT_id),
+  FOREIGN KEY (user_id) REFERENCES USERS (user_id),
+  FOREIGN KEY (instrument_id) REFERENCES INSTRUMENT ( instrument_id) ,
+  FOREIGN KEY (education_experience_id)  REFERENCES EDUCATION_EXPERIENCE( education_experience_id) 
+  )
+ENGINE = 'InnoDB';
+
+CREATE TABLE  PARTECIPATE (
+  user_id     INT NOT NULL,
+  jam_session_id  INT NOT NULL,
+  session_instrument_id	  INT NOT NULL,
+  INDEX new_ID (user_id),
+ 
+  INDEX jam_session_idx (jam_session_id),
+  PRIMARY KEY (user_id, jam_session_id),
+  FOREIGN KEY (user_id) REFERENCES USERS (user_id),
+  FOREIGN KEY (jam_session_id) REFERENCES JAM_SESSION (jam_session_id),
+  FOREIGN KEY (session_instrument_id) REFERENCES SESSION_INSTRUMENT (session_instrument_id)
+  )
+ENGINE = 'InnoDB';
+
+CREATE TABLE WALLET 
+(
+	user_id INT NOT NULL,
+	jam_session_id INT NOT NULL,
+	session_instrument_id INT NOT NULL,
+	note varchar(300) NULL,
+	rating TINYINT NULL,
+	INDEX new_USER (user_id),
+	INDEX new_JAM_SESSION (jam_session_id ),
+	INDEX newWALLET (session_instrument_id) ,
+	PRIMARY KEY ( user_id , jam_session_id , session_instrument_id),
+	FOREIGN KEY ( user_id ) REFERENCES USERS ( user_id),
+	FOREIGN KEY ( jam_session_id) REFERENCES JAM_SESSION( jam_session_id),
+	FOREIGN KEY (session_instrument_id) REFERENCES SESSION_INSTRUMENT(session_instrument_id)
+)	
+ENGINE = 'InnoDB';	
+
+CREATE TABLE USER_RATING(	
+	
+	user_id INT NOT NULL,
+	jam_session_id INT NOT NULL,
+	rated_user INT NOT NULL,
+	note varchar(300) NULL,
+	professionality TINYINT NULL,
+	performance TINYINT NULL,
+	impression TINYINT NULL,
+	INDEX new_user(user_id),
+	INDEX new_RatedUser (user_id),
+	INDEX new_JAM_SESSION ( jam_session_id),
+	PRIMARY KEY ( user_id , jam_session_id , rated_user),
+	FOREIGN KEY ( user_id) REFERENCES USERS (user_id),
+	FOREIGN KEY (jam_session_id) REFERENCES JAM_SESSION (jam_session_id),
+	FOREIGN KEY (rated_user) REFERENCES SESSION_INSTRUMENT(session_instrument_id)
+	)
+ENGINE = 'InnoDB';
+
+
+//** TRIGGER **//
+INSERT
+CREATE DEFINER=`root`@`localhost` trigger updateRatingAfeterInsert
+after insert on user_rating
+for each row
+begin
+update users SET professionality = (select avg(professionality) 
+									from user_rating
+                                    where rated_user = new.rated_user)
+		where user_id =  new.rated_user;
+update users SET performance = (select avg(performance) 
+									from user_rating
+                                    where rated_user = new.rated_user)
+where user_id =  new.rated_user;
+update users SET impression = (select avg(impression) 
+									from user_rating
+                                    where rated_user = new.rated_user)
+where user_id =  new.rated_user;
+end 
+
+
+UPDATE
+CREATE DEFINER=`root`@`localhost` trigger updateRatingAfterUpdate
+after update  on user_rating
+for each row
+begin
+if new.professionality <> old.professionality then
+update users SET professionality = (select avg(professionality) from user_rating where rated_user = old.rated_user)
+			 where user_id = new.rated_user; 
+end if;
+if new.performance <> old.performance then
+update users SET performance = (select avg(performance) from user_rating where rated_user = old.rated_user)
+			 where user_id = new.rated_user; 
+end if;
+if new.impression <> old.impression then
+update users SET impression = (select avg(impression) from user_rating where rated_user = old.rated_user )
+			 where user_id = new.rated_user; 
+end if;
+end
+
+//** DELETE **//
+delimiter // 
+CREATE DEFINER=`root`@`localhost` trigger updateRatingAfeterDelete
+after delete on user_rating
+for each row
+begin
+update users SET professionality = (select avg(professionality) 
+									from user_rating
+                                    where rated_user = old.rated_user)
+		where user_id =  old.rated_user;
+update users SET performance = (select avg(performance) 
+									from user_rating
+                                    where rated_user = old.rated_user)
+where user_id =  old.rated_user;
+update users SET impression = (select avg(impression) 
+									from user_rating
+                                    where rated_user = old.rated_user)
+where user_id =  old.rated_user;
+end//
+
+
+
+

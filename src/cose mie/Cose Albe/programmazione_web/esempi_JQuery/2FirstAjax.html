@@ -1,0 +1,28 @@
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+	</script>
+</head>
+
+	<div id="persone"></div>
+
+	</html>
+	
+<script>
+	$(document).ready(function()
+	{		 
+		 $.ajax({
+				url: 'dati.php',  
+				dataType: "json",
+				success: function(data){
+					 
+					$.each(data, function(chiave,elemento)
+					{   console.log(elemento);
+						var divR = $("<div>").append($("<h1>").text(elemento.surname));
+						$(divR).append($("<h2>").text(elemento.name));
+						$("#persone").append(divR);
+					});
+				}
+			})	 
+	});
+</script>

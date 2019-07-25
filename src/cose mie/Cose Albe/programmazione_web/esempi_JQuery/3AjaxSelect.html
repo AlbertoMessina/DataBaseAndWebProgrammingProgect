@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+	</script>
+</head>
+	<select id="emptyDropdown">
+	</select>
+
+<input type="text" id="regista"/>
+<input type="text" id="Anno"/>
+	 
+<script>
+
+  $('#emptyDropdown').empty();
+    
+    $.ajax({
+            type: "POST",
+            url: "dataSelect.php",            
+            success: function(data){
+                // Parse the returned json data
+                var opts = $.parseJSON(data);
+				
+                // Use jQuery's each to iterate over the opts value
+                $.each(opts, function(i, d) {
+                    // You will need to alter the below to get the right values from your json object.  Guessing that d.id / d.modelName are columns in your carModels data
+                    $('#emptyDropdown').append('<option value="' + d.CodFilm + '">' + d.Titolo + '</option>');
+                });
+            }
+        });
+		
+		$('#emptyDropdown').on('change', function() {
+			$.ajax({
+            type: "POST",
+            url: "dataDetails.php",
+            data: { 'CodFilm': this.value  },
+            success: function(data){
+                // Parse the returned json data
+                var opts = $.parseJSON(data);
+				console.log(opts);
+                 $("#regista").val(opts[0].Regista);
+				 $("#Anno").val(opts[0].AnnoProduzione);
+                 
+            }
+        });
+		})
+</script>

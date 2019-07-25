@@ -1,0 +1,23 @@
+/* Definizione id personalizza per i form */
+#mail, #password, #submit, #registrati, #p_iva,
+#telefono, #nome, #cognome, #login, #funzione,
+#costo, #citta, #indirizzo, #nome_modulo,
+#id_utente, #telefono_cliente, #sviluppatore_layout,
+#p_iva_u, #nome_u, #cognome_u, #telefono_u,
+#id_m, #nome_m, #funzione_m, #costo_m {
+    border-radius: 10px 10px 10px 10px;
+}
+
+/* Modifica alone dei form dopo la selezione */
+.form-control:focus {
+    border-color: grey;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(169,169,169,.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(169,169,169,.6);
+}
+
+/* Elimina i dettagli quando si clicca su un link */
+a:focus {
+    outline: none;
+    text-decoration: none;
+}

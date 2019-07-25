@@ -1,0 +1,90 @@
+table {
+    display: table;
+    border-collapse: separate;
+    border-spacing: 2px;
+    border-color: gray;
+}
+
+td {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+th {
+    display: table-cell;
+    vertical-align: inherit;
+    font-weight: bold;
+    text-align: center;
+}
+
+tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+}
+
+
+
+form {
+    display: block;
+    margin-top: 0em;
+}
+
+caption { 
+    display: table-caption;
+    text-align: center;
+    color: black;
+}
+
+legend {
+    font-size: 1.2em;
+    font-weight: bold;
+    display: block;
+    padding-left: 2px;
+    padding-right: 2px;
+    border: none;
+}
+fieldset { 
+    display: block;
+    margin-left: 2px;
+    margin-right: 2px;
+    padding-top: 0.35em;
+    padding-bottom: 0.625em;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+    border: 2px groove (internal value);
+    border: 1px solid RGBA(40,40,40,0.30);
+    border-radius: 10px;
+}
+
+input{
+    padding: 0;
+    height: 1.5em;
+    border: 1px solid RGBA(50,50,50,0.1);
+    border-radius: 7px;
+}
+input[type=text]:focus{
+    outline-color: rgba(255,255,255,0);
+}
+
+input:focus{
+    outline-color: rgba(255,255,255,0);
+}
+input[type=tel]:focus{
+    outline-color: rgba(255,255,255,0);
+}
+
+button{
+    padding: 0.5em;
+    overflow: hidden; 
+    font-size: 1em;
+    background: rgba(50, 50, 50, 0.9);
+}
+
+input[type=submit], input[type=reset]{
+    padding: 0 0.5em 0 0.5em;
+    margin-top: 1em;
+    overflow: hidden;
+    background: rgba(50, 50, 50, 0.6);
+    height: 1.8em;
+}

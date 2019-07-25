@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Datatable Catering</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	
+	
+	
+	
+	
+</head>
+<body>
+<table id="tableClienti" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Codice Fiscale</th>
+                <th>Citt&agrave</th>
+				<th>Indirizzo</th>
+				<th>Telefono</th>
+				<th></th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                 <th>Codice Fiscale</th>
+                <th>Citt&agrave</th>
+				<th>Indirizzo</th>
+				<th>Telefono</th>
+				<th></th>
+            </tr>
+        </tfoot>
+    </table>
+	
+	<!--<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>-->
+	<button id="sendArray" type="button" class="btn btn-info btn-lg">Send Array</button>
+	
+	<div id="myModal" class="modal fade" role="dialog">  
+	  <div class="modal-dialog">
+		<!-- Modal content-->
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">Modal Header</h4>
+		  </div>
+		  <div class="modal-body">        
+				<form id="cateringModal" action="/action_page.php">
+					<fieldset>
+					<p>
+					  <label for="name">N Partecipanti</label>
+					  
+					  <input type="text" name="npartecipanti" id="npartecipanti" class="text ui-widget-content ui-corner-all" required>
+					  <p>
+					  <label for="email">Costo</label>
+					  <input type="text" name="costo" id="costo"  class="text ui-widget-content ui-corner-all" required>     
+					  <p>
+					  <label for="datepicker">Data</label>
+					  <input type="text" id="datepicker" required />
+					  <!-- Allow form submission with keyboard without duplicating the dialog button -->
+					<table id="tableMenu" class="display" cellspacing="0" width="100%">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Ristorante</th>
+								<th>Costo</th>
+								<th></th>
+							</tr>
+						</thead>
+						
+					</table>
+						
+					
+					  <input type="submit" >
+					</fieldset>			
+			  </form>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		  </div>
+		</div>
+
+	  </div>
+	</div>
+
+ 
+
+<div id="dialog-form-menu" title="Menu">  
+  <form>     
+	<table id="tablePortate" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+			<th>ID</th>
+                <th>Nome</th>
+                <th>Costo</th>				 
+            </tr>
+        </thead>       
+    </table>	
+      <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">    
+  </form>
+</div>
+
+		</body>
+	</html>
+<script>
+
+ var idSelectedMenu;
+ var idSelectedUser;
+  var selected = [];
+ 
+function ShowCatering(id)
+{
+	idSelectedUser = id;
+	$("#myModal").modal();
+	
+	//dialogCatering.dialog( "open" );
+}
+function ShowMenu(id)
+{
+	idSelectedMenu = id;
+	dialogMenu.dialog( "open" );
+	
+	$('#tablePortate').dataTable( {
+    "sAjaxSource": "datatablePortate.php?idmenu="+id,
+	"bFilter": true,
+        "dom": "Bfrtip",
+        "responsive": true,
+        "bDestroy": true,         
+        "aoColumns": [             
+            { "mData": "ID" },
+			{ "mData": "Nome" },
+            { "mData": "Costo",
+				
+				render: function(){ 
+				
+						}
+				},
+			 
+        ],
+        
+    });
+}
+function InsertCatering()
+{
+	//chiamata ajax
+	 
+	console.log(idSelectedMenu);
+	console.log(idSelectedUser);
+	
+}
+	
+$(document).ready( function() {
+
+
+	$("#sendArray").click(function(){
+		var jsonString = JSON.stringify(selected); //serializzazione array
+			$.ajax({
+				type: "POST",
+				url: "array.php",
+				data: { 'arraydata': jsonString },
+				success: function(data){
+					console.log("ok"); 
+				}
+			});
+		});
+
+
+  $("#cateringModal").validate({
+    rules: {
+      npartecipanti: {
+        required: true,
+        minlength: 8
+      },
+       
+    },
+    messages: {
+      npartecipanti: {
+        required: "Please enter some data",
+        minlength: "Your data must be at least 8 characters"
+      },
+       
+    }
+  });
+
+
+
+
+	$( "#datepicker" ).datepicker();
+
+	dialogCatering = $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 500,
+      width: 550,
+      modal: true,
+      buttons: {
+        "Inserisci Catering": function() { InsertCatering()},
+        Cancel: function() {
+          dialogCatering.dialog( "close" );
+        }
+      },
+      close: function() {
+        //form[ 0 ].reset();
+        //allFields.removeClass( "ui-state-error" );
+      }
+    });
+	
+	dialogMenu = $( "#dialog-form-menu" ).dialog({
+      autoOpen: false,
+      height: 500,
+      width: 550,
+      modal: true,
+      buttons: {
+        //"Inserisci Catering": function(){ InsertCatering()},
+        Cancel: function() {
+          dialogMenu.dialog( "close" );
+        }
+      },
+      close: function() {
+        //form[ 0 ].reset();
+        //allFields.removeClass( "ui-state-error" );
+      }
+    });
+	
+
+ 	
+	
+  $('#tableClienti').dataTable( {
+    "sAjaxSource": "datatableClienti.php",
+	"bFilter": true,
+        "dom": "Bfrtip",
+        "responsive": true,
+        "bDestroy": true,  
+		"rowId": 'CF',		
+		"rowCallback": function( row, data ) {
+            if ( $.inArray(data.DT_RowId, selected) !== -1 ) {
+                $(row).addClass('selected');
+            }
+        },		
+        "aoColumns": [
+             
+            { "mData": "CF" },
+            { "mData": "Citta"},
+			{ "mData": "Indirizzo"},
+			{ "mData": "Tel"},
+			{ "mData": "button",
+			  "mRender": function(data, type, row) 
+						 {									
+							return '<input onclick="ShowCatering(\''+row.CF+'\')" type="button" value="Inserisci Catering"/>'
+						 }
+			},
+        ],
+        
+    });
+	
+	 $('#tableClienti tbody').on('click', 'tr', function () {
+		
+        var id = this.id; //definire proprietà rowId per il corretto funzionamento
+        var index = $.inArray(id, selected);
+ 
+        if ( index === -1 ) {
+            selected.push(id);
+        } else {
+            selected.splice(index, 1);
+        }
+ 
+        $(this).toggleClass('selected');
+		console.log(selected);
+    });
+	
+	
+	$('#tableMenu').dataTable( {
+    "sAjaxSource": "datatableMenu.php",
+	"bFilter": false,
+        "dom": "Bfrtip",
+        "responsive": true,
+        "bDestroy": true,    
+		"rowId": 'ID',
+        "aoColumns": [
+             
+			{ "mData": "ID" },
+			 { "mData": "Ristorante" },
+            { "mData": "Costo"},
+			{ "mData": "button",
+			  "mRender": function(data, type, row) {								
+								return "<input onclick='ShowMenu("+row.ID+")' type='button' value='Visualizza Menu'/>"
+								}
+			},
+        ],
+        
+    });
+	
+	$('#tableMenu tbody').on( 'click', 'tr', function () {
+	var table = $('#tableMenu').DataTable();
+	 idSelectedMenu = table.row(this).id(); //con id() ottengo solo l'id
+	console.log(table.row(this).data().ID); //con data() ottengo i dati di tutta la riga
+	console.log(idSelectedMenu);
+	
+	//alert(data.DT_RowId);	
+        if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
+        }
+        else {
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+        }
+    });
+	
+	
+	})
+</script>

@@ -1,0 +1,71 @@
+@media(min-width: 768px) {
+  .field-label-responsive {
+    padding-top: .5rem;
+    text-align: right;
+  }
+}
+
+
+
+
+.imm_carousel{
+
+  width: 100% !important;
+  height:450px ;
+
+}
+
+.carousel-inner {
+  background-color:  rgba(39, 36, 36, 0.589);
+}
+
+
+.bg-custom{
+
+  background-color: rgba(58, 58, 58, 1);
+
+}
+.separator
+{
+
+  background-color: black important!;
+
+}
+
+.content-colors
+{
+
+  background-color: Gray;
+
+}
+
+
+/* dataTable account*/
+
+.dataTables_wrapper
+{
+
+  width: 100% ;
+}
+
+.text-wrap{
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+margin-left: 0;
+}
+.width-200{
+
+    width:200px;
+}
+.hide-step{
+  display: none;
+
+}
+.btn{
+  cursor : pointer;
+}
+.highlight{
+  background-color:  lightgray !important;
+
+}
